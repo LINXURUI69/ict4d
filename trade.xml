@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version = "2.1">
+
+  <!-- choose the languages -->
+  <form id="languageSelection">
+    <field name="language">
+      <prompt>Welcome to trade your seed. For English, press 1. Pour le français, appuyez sur 2.</prompt>
+      <grammar xml:lang="en-US" root = "toprule" mode="dtmf">
+        <rule id="toprule" scope = "public">
+          <one-of>
+            <item>1</item>
+            <item>2</item>
+          </one-of>
+        </rule>
+      </grammar>
+      <filled>
+        <if cond="language == '1'">
+          <goto next="#seedAction_en"/>
+        </if>
+        <else>
+          <goto next="#seedAction_fr"/>
+        </else>
+      </filled>
+    </field>
+  </form>
+
+ <!-- English Version seedAction (buy or sell) -->
+  <form id="seedAction_en" xml:lang="en-US">
+    <field name="action">
+      <prompt>Are you looking to buy or sell seeds? Press 1 to buy seeds, press 2 to sell seeds.</prompt>
+      <grammar xml:lang="en-US" root = "toprule" mode="dtmf">
+        <rule id="toprule" scope = "public">
+          <one-of>
+            <item>1</item>
+            <item>2</item>
+          </one-of>
+        </rule>
+      </grammar>
+      <filled>
+        <if cond="action == '1'">
+          <goto next="#buySeeds_en"/>
+        </if>
+        <elseif cond="action == '2'">
+          <goto next="#sellSeeds_en"/>
+        </elseif>
+      </filled>
+    </field>
+  </form>
+
+    <form id="buySeeds_en" xml:lang="en-US">
+        <field name="seedType">
+            <prompt>What type of seeds would you like to buy? Press 1 for cotton, press 2 for sorghum, press 3 for millet</prompt>
+        <grammar xml:lang="en-US" root = "toprule" mode="dtmf">
+            <rule id="toprule" scope = "public">
+            <one-of>
+                <item>1</item>
+                <item>2</item>
+                <item>3</item>
+            </one-of>
+            </rule>
+        </grammar>
+        <filled>
+            <if cond="seedType == '1'">
+                <prompt>You have selected cotton.</prompt>
+                <goto next="#buyQuantity"/>
+            </if>
+            <elseif cond="seedType == '2'">
+                <prompt>You have selected sorghum.</prompt>
+                <goto next="#buyQuantity"/>
+            </elseif>
+            <elseif cond="seedType == '3'">
+                <prompt>You have selected millet.</prompt>
+                <goto next="#buyQuantity"/>
+            </elseif>
+            <else>
+                <prompt>Invalid input. Please press 1 for cotton, 2 for sorghum, or 3 for millet.</prompt>
+            </else>
+        </filled>
+        </field>
+    </form>
+        
+    <form id="buyQuantity" xml:lang="en-US">
+        <field name="quantity">
+            <prompt>How many kilograms of seed would you like to buy? For example, press 4 and 5 if you want to buy 45 kilograms.</prompt>
+            <grammar xml:lang="en-US" root="toprule" mode="dtmf">
+                <rule id="toprule" scope="public">
+                    <one-of>
+                        <item repeat="1-">
+                            <ruleref uri="#digit"/>
+                        </item>
+                    </one-of>
+                </rule>
+                <rule id="digit">
+                    <one-of>
+                        <item>0</item>
+                        <item>1</item>
+                        <item>2</item>
+                        <item>3</item>
+                        <item>4</item>
+                        <item>5</item>
+                        <item>6</item>
+                        <item>7</item>
+                        <item>8</item>
+                        <item>9</item>
+                    </one-of>
+                </rule>
+            </grammar>
+            <filled>
+                <prompt>You have chosen to buy <value expr="quantity"/> kilograms of seed.</prompt>
+                <goto next="#warehouseChoice"/>
+            </filled>
+            <nomatch>
+                <prompt>Invalid input. Please enter the quantity in kilograms by pressing the corresponding numbers.</prompt>
+                <reprompt/>
+            </nomatch>
+            <noinput>
+                <prompt>I'm sorry, I didn't hear anything. Please enter the quantity in kilograms by pressing the corresponding numbers.</prompt>
+                <reprompt/>
+            </noinput>
+        </field>
+    </form>
+
+
+
+    <form id="warehouseChoice" xml:lang="en-US">
+        <field name="warehouse">
+                <prompt>You can choose the following warehouses. 
+                Warehouse 1 at 1096 BP, warehouse 2 at 1081 HV.
+                Press 1 for Warehouse 1, press 2 for Warehouse 2.
+                </prompt>
+            <grammar xml:lang="en-US" root="toprule" mode="dtmf">
+                <rule id="toprule" scope="public">
+                    <one-of>
+                    <item>1</item>
+                    <item>2</item>
+                    </one-of>
+                </rule>
+            </grammar>
+            <filled>
+                <prompt>Your choice is warehouse <value expr="warehouse"/>.</prompt>
+                <goto next="#buyConfirm"/>
+            </filled>
+        </field>
+    </form>
+
+    <form id="buyConfirm" xml:lang="en-US">
+
+        <field name="confirm">
+            <prompt>Please confirm your order. Press 1 to confirm, press 2 to cancel.</prompt>
+            <grammar xml:lang="en-US" root="toprule" mode="dtmf">
+                <rule id="toprule" scope="public">
+                    <one-of>
+                        <item>1</item>
+                        <item>2</item>
+                    </one-of>
+                </rule>
+            </grammar>
+            <filled>
+                <if cond="confirm == '1'">
+                    <prompt>Your purchase has been confirmed. Thank you for your purchase.</prompt>
+                    <exit/>
+                </if>
+                <else>
+                    <prompt>Your purchase has been cancelled. Thank you for your time.</prompt>
+                    <exit/>
+                </else>
+            </filled>
+        </field>
+    </form>
+
+    <form id="sellSeeds_en" xml:lang="en-US">
+        <field name="seedType">
+        <prompt>What type of seeds are you selling? Press 1 for cotton, press 2 for sorghum, press 3 for millet.</prompt>
+        <grammar xml:lang="en-US" root = "toprule" mode="dtmf">
+            <rule id="toprule" scope="public">
+            <one-of>
+                <item>1</item>
+                <item>2</item>
+                <item>3</item>
+            </one-of>
+            </rule>
+        </grammar>
+        <filled>
+            <block>
+                <if cond="seedType == '1'">
+                    <prompt>Selected seed type is cotton.</prompt>
+                </if>
+                <elseif cond="seedType == '2'">
+                    <prompt>Selected seed type is sorghum.</prompt>
+                </elseif>
+                <elseif cond="seedType == '3'">
+                    <prompt>Selected seed type is millet.</prompt>
+                </elseif>
+                <else>
+                    <prompt>Please re-enter, press 1 for cotton, press 2 for sorghum, press 3 for millet</prompt>
+                </else>
+            </block>
+            
+            <goto next="#warehouseChoice"/>
+        
+        </filled>
+        </field>
+    </form>
+
+</vxml>
+
+<products>
+    <product>
+        <name>Warehouse 1</name>
+        <inventory>
+            <item name="Cotton" quantity="50"/>
+            <item name="Sorghum" quantity="100"/>
+            <item name="Millet" quantity="150"/>
+        </inventory>
+        <location>1096 BP</location>
+    </product>
+    <product>
+        <name>Warehouse 2</name>
+        <inventory>
+            <item name="Cotton" quantity="80"/>
+            <item name="Sorghum" quantity="120"/>
+            <item name="Millet" quantity="200"/>
+        </inventory>
+        <location>1081 HV</location>
+    </product>
+</products>
